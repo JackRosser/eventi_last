@@ -1,11 +1,10 @@
 package it.epicode.eventi_last.eventi;
 
-import it.epicode.eventi_last.auth.AppUser;
 import it.epicode.eventi_last.user.Prenotazione;
+import it.epicode.eventi_last.user.Utente;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -23,7 +22,7 @@ public class Evento {
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
-    private AppUser createdBy; // Nuovo campo per tracciare l'organizzatore
+    private Utente createdBy; // Nuovo campo per tracciare l'organizzatore
 
     @OneToMany(mappedBy = "evento")
     private List<Prenotazione> prenotazioni;

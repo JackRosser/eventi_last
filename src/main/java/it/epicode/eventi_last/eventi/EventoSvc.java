@@ -1,7 +1,7 @@
 package it.epicode.eventi_last.eventi;
 
-import it.epicode.eventi_last.auth.AppUser;
 import it.epicode.eventi_last.exceptions.AlreadyExistsException;
+import it.epicode.eventi_last.user.Utente;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class EventoSvc {
 
     // CREO UN EVENTO
 
-    public Evento create(@Valid EventoDto request, AppUser creator) {
+    public Evento create(@Valid EventoDto request, Utente creator) {
         if (eventoRepo.existsByName(request.getName())) {
             throw new AlreadyExistsException("Evento già esistente");
         }
@@ -49,7 +49,7 @@ public class EventoSvc {
 
     // MODIFICO EVENTO
 
-    public Evento update(Long id, EventoDto request, AppUser currentUser) {
+    public Evento update(Long id, EventoDto request, Utente currentUser) {
         Evento evento = findById(id);
 
         // Verifica che l'utente sia il creatore dell'evento
@@ -64,7 +64,7 @@ public class EventoSvc {
 
     // ELIMINO EVENTO
 
-    public String delete(Long id, AppUser currentUser) {
+    public String delete(Long id, Utente currentUser) {
         Evento evento = findById(id);
 
         // Verifica che l'utente sia il creatore dell'evento

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -18,8 +19,9 @@ public class Utente {
     private String username;
     private String password;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Role ruolo;
+    private Set<Role> roles;
 
     @OneToMany(mappedBy = "utente")
     private List<Prenotazione> prenotazioni;

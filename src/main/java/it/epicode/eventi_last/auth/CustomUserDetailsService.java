@@ -1,5 +1,7 @@
 package it.epicode.eventi_last.auth;
 
+import it.epicode.eventi_last.user.Utente;
+import it.epicode.eventi_last.user.UtenteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,17 +16,17 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private AppUserRepository appUserRepository;
+    private UtenteRepo utenteRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appUser = appUserRepository.findByUsername(username)
+        Utente utente = utenteRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato con username: " + username));
 
         return new User(
-                appUser.getUsername(),
-                appUser.getPassword(),
-                appUser.getRoles().stream()
+                utente.getUsername(),
+                utente.getPassword(),
+                utente.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority(role.name()))
                         .collect(Collectors.toList())
         );

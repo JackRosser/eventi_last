@@ -1,16 +1,15 @@
 package it.epicode.eventi_last.eventi;
 
-import it.epicode.eventi_last.auth.AppUser;
+import it.epicode.eventi_last.user.Utente;
 import it.epicode.eventi_last.user.UtenteRepo;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -25,10 +24,10 @@ public class EventoController {
     private UtenteRepo utenteRepo; // Repository per accedere agli utenti
 
     @PostMapping
-    public ResponseEntity<Evento> create(@RequestBody @Valid EventoDto request, Principal principal) {
+    public ResponseEntity<Evento> create(@RequestBody @Valid EventoDto request, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         // Trova l'utente autenticato nel database usando il nome utente dal Principal
-        AppUser creator = utenteRepo.findByUsername(principal.getName())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + principal.getName()));
+        Utente creator = utenteRepo.findByUsername(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + user.getUsername()));
 
         // Passa l'utente al servizio
         Evento evento = eventoSvc.create(request, creator);
@@ -52,7 +51,7 @@ public class EventoController {
     @PutMapping("/{id}")
     public ResponseEntity<Evento> update(@PathVariable Long id, @RequestBody EventoDto request, Principal principal) {
         // Recupera l'utente autenticato
-        AppUser currentUser = utenteRepo.findByUsername(principal.getName())
+        Utente currentUser = utenteRepo.findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + principal.getName()));
 
         // Passa l'utente autenticato al servizio
@@ -62,7 +61,7 @@ public class EventoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id, Principal principal) {
         // Recupera l'utente autenticato
-        AppUser currentUser = utenteRepo.findByUsername(principal.getName())
+        Utente currentUser = utenteRepo.findByUsername(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + principal.getName()));
 
         // Passa l'utente autenticato al servizio
