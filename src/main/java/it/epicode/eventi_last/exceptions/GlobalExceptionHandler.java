@@ -1,5 +1,6 @@
 package it.epicode.eventi_last.exceptions;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -16,13 +17,19 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // RICERCA ID CHE NON ESISTE ___________
 
-    @ExceptionHandler(value = EntityNotFoundException.class)
-    protected ResponseEntity<Object> entityNotFound(EntityNotFoundException e) {
-        return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ResponseEntity<ErrorMessage> handleEntityNotFound(EntityNotFoundException ex) {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
-    // FINE BLOCCO SINGOLO EXCEPTION ________
+
+    @ExceptionHandler(EntityExistsException.class)
+    protected ResponseEntity<ErrorMessage> handleEntityExists(EntityExistsException ex) {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorMessage, HttpStatus.CONFLICT);
+    }
+
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex) {
@@ -33,7 +40,6 @@ public class GlobalExceptionHandler {
                 fieldName = fieldName.substring(fieldName.lastIndexOf('.') + 1);
             }
             errors.put(fieldName, violation.getMessage());
-
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }

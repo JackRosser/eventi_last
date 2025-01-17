@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "eventi")
 public class Evento {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String name;
