@@ -1,23 +1,22 @@
 package it.epicode.eventi_last.eventi;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
 public class EventoDto {
-    @NotBlank(message = "Inserisci un nome")
+    @NotEmpty(message = "Il nome dell'evento è obbligatorio")
     private String name;
-    @NotBlank(message = "Inserisci una descrizione")
+
+    @NotEmpty(message = "La descrizione dell'evento è obbligatoria")
     private String descrizione;
-    @NotNull(message = "Inserisci una data")
-    private LocalDate data;
-    @NotBlank(message = "Inserisci un luogo")
+
+    @NotEmpty(message = "Il luogo dell'evento è obbligatorio")
     private String luogo;
-    @NotNull(message = "inserisci un numero di posti")
-    @PositiveOrZero(message = "il numero di posti deve essere inferiore o uguale a zero")
+
+    @NotNull(message = "Il numero di posti è obbligatorio")
+    @Min(value = 1, message = "Il numero di posti deve essere almeno 1")
     private Integer posti;
 }

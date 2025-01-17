@@ -49,19 +49,32 @@ public class EventoSvc {
 
     // MODIFICO EVENTO
 
-    public Evento update(Long id, EventoDto request) {
-        Evento e = findById(id);
+    public Evento update(Long id, EventoDto request, AppUser currentUser) {
+        Evento evento = findById(id);
 
-        BeanUtils.copyProperties(request, e);
-        return eventoRepo.save(e);
+        // Verifica che l'utente sia il creatore dell'evento
+        if (!evento.getCreatedBy().equals(currentUser)) {
+            throw new SecurityException("Non sei autorizzato a modificare questo evento");
+        }
+
+        BeanUtils.copyProperties(request, evento);
+        return eventoRepo.save(evento);
     }
+
 
     // ELIMINO EVENTO
 
-    public String delete(Long id) {
-        Evento e = findById(id);
-        eventoRepo.delete(e);
-        return "Employee with id " + id + " deleted";
+    public String delete(Long id, AppUser currentUser) {
+        Evento evento = findById(id);
+
+        // Verifica che l'utente sia il creatore dell'evento
+        if (!evento.getCreatedBy().equals(currentUser)) {
+            throw new SecurityException("Non sei autorizzato a eliminare questo evento");
+        }
+
+        eventoRepo.delete(evento);
+        return "Evento eliminato con successo";
     }
+
 
 }

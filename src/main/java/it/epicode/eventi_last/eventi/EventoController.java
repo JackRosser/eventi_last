@@ -50,14 +50,25 @@ public class EventoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Evento> update(@PathVariable Long id, @RequestBody EventoDto request) {
-        return new ResponseEntity<>(eventoSvc.update(id, request), HttpStatus.OK);
+    public ResponseEntity<Evento> update(@PathVariable Long id, @RequestBody EventoDto request, Principal principal) {
+        // Recupera l'utente autenticato
+        AppUser currentUser = utenteRepo.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + principal.getName()));
+
+        // Passa l'utente autenticato al servizio
+        return new ResponseEntity<>(eventoSvc.update(id, request, currentUser), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        return new ResponseEntity<>(eventoSvc.delete(id), HttpStatus.OK);
+    public ResponseEntity<String> delete(@PathVariable Long id, Principal principal) {
+        // Recupera l'utente autenticato
+        AppUser currentUser = utenteRepo.findByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + principal.getName()));
+
+        // Passa l'utente autenticato al servizio
+        return new ResponseEntity<>(eventoSvc.delete(id, currentUser), HttpStatus.OK);
     }
+
 
 }
 
