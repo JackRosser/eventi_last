@@ -15,7 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 // PROVA DEVELOP
-
+// FUNZIONA
 @Component
 public class JwtTokenUtil {
 
