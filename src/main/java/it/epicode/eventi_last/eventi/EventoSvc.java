@@ -1,5 +1,6 @@
 package it.epicode.eventi_last.eventi;
 
+import it.epicode.eventi_last.auth.AppUser;
 import it.epicode.eventi_last.exceptions.AlreadyExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -18,14 +19,18 @@ public class EventoSvc {
 
     // CREO UN EVENTO
 
-    public Evento create(@Valid EventoDto request) {
-        Evento e = new Evento();
+    public Evento create(@Valid EventoDto request, AppUser creator) {
         if (eventoRepo.existsByName(request.getName())) {
-            throw new AlreadyExistsException("Username già esistente");
+            throw new AlreadyExistsException("Evento già esistente");
         }
-        BeanUtils.copyProperties(request, e);
-        return eventoRepo.save(e);
+
+        Evento evento = new Evento();
+        BeanUtils.copyProperties(request, evento);
+        evento.setCreatedBy(creator); // Associa l'organizzatore
+
+        return eventoRepo.save(evento);
     }
+
 
     // CERCO UN EVENTO DA ID
 
