@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Data
 public class EventoDto {
     @NotBlank(message = "Inserisci un nome")
-    private String nome;
+    private String name;
     @NotBlank(message = "Inserisci una descrizione")
     private String descrizione;
     @NotNull(message = "Inserisci una data")

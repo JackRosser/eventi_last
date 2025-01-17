@@ -20,7 +20,7 @@ public class EventoSvc {
 
     public Evento create(@Valid EventoDto request) {
         Evento e = new Evento();
-        if (eventoRepo.existsByUsername(request.getNome())) {
+        if (eventoRepo.existsByName(request.getName())) {
             throw new AlreadyExistsException("Username già esistente");
         }
         BeanUtils.copyProperties(request, e);
