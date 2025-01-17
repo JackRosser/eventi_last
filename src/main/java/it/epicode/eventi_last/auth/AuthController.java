@@ -19,13 +19,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+        Set<Role> roles = registerRequest.isOrganizer()
+                ? Set.of(Role.ROLE_ORGANIZER)
+                : Set.of(Role.ROLE_USER);
+
         appUserService.registerUser(
                 registerRequest.getUsername(),
                 registerRequest.getPassword(),
-                Set.of(Role.ROLE_USER) // Assegna il ruolo di default
+                roles
         );
         return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
